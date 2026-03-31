@@ -12,14 +12,12 @@ This repository provides R implementations of six process data analysis methods,
 
 The analyses use the **PIAAC 2012 U.S. log-file data**, publicly available from the [OECD PIAAC Data Portal](https://www.oecd.org/skills/piaac/data/).
 
-Place the following two files in your data directory before running any script:
+Place the following two files in your data directory:
 
 | File | Description |
 |------|-------------|
 | `ps1_usa.csv` | Preprocessed log-file data for item PS1 (U.S. sample) |
 | `prgusap1.csv` | PIAAC background and score data (U.S. sample) |
-
-> **Note:** `S6_HMM.R` and `S6_SIP.R` apply an additional action recoding step inline before analysis. No separate preprocessing script is required.
 
 ---
 
@@ -27,14 +25,13 @@ Place the following two files in your data directory before running any script:
 
 | File | Section | Method |
 |------|---------|--------|
+| `preprocessing.R` | — | Action recoding: collapses `action_event` into 15 categories (`merged_event`). Run once before `S6_HMM.R` or `S6_SIP.R`. |
 | `S4_indicator.R` | §5.1 | Descriptive Process Indicators (ToT, TFA, NoA) |
 | `S5_ngram.R` | §5.2 | N-gram Analysis with TF-ISF weighting and K-means clustering |
 | `S5_MDS.R` | §5.3 | Multidimensional Scaling (OSS dissimilarity + PCA rotation) |
 | `S6_HMM.R` | §6.1 | Hidden Markov Models + GGM network analysis |
 | `S6_SIP.R` | §6.2 | Subtask Identification Procedure (GRU-based entropy segmentation) |
 | `S6_DIF.R` | §6.3 | DIF Analysis with process features (MDS + forward stepwise selection) |
-
-All scripts can be run independently.
 
 ---
 
@@ -57,11 +54,12 @@ install.packages(c(
 
 ## Usage
 
-Set `path` at the top of each script to your local data directory:
+1. Set `path` at the top of each script to your local data directory:
+   ```r
+   path <- "path/to/your/data/"
+   ```
 
-```r
-path <- "path/to/your/data/"   # directory containing ps1_usa.csv, prgusap1.csv
-```
+2. If using `S6_HMM.R` or `S6_SIP.R`, run `preprocessing.R` first. This appends the `merged_event` column to `ps1_usa.csv` and only needs to be done once.
 
 ---
 
