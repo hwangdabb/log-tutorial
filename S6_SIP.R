@@ -3,11 +3,10 @@ rm(list = ls())
 # ============================================================
 # Subtask Identification Procedure (SIP)
 # Following Wang et al. (2023)
-# Note: run S6_HMM_PREPROCESSING.R first to generate ps1_data2.csv
 # ============================================================
 
 # ── User Configuration ────────────────────────────────────────────
-path <- "path/to/your/data/"   # directory containing ps1_data2.csv, prgusap1.csv
+path <- "path/to/your/data/"   # directory containing ps1_usa.csv, prgusap1.csv
 # ─────────────────────────────────────────────────────────────────
 
 library(torch)
@@ -17,10 +16,35 @@ library(patchwork)
 library(gridExtra)
 
 # ── Step 0. Load Data ──────────────────────────────────────────────
-ps1_data       <- read.csv(paste0(path, "preprocessing/ps1_data2.csv"), header = TRUE, row.names = 1)
+ps1_data       <- read.csv(paste0(path, "ps1_usa.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
-# ── Step 1. Outcome Variable ───────────────────────────────────────
+# ── Step 1. Action Recoding ────────────────────────────────────────
+# Recode granular merged_event labels into 15 behaviorally meaningful categories.
+ps1_data <- ps1_data %>%
+  mutate(
+    action_recoded = case_when(
+      merged_event == "start"                             ~ "start",
+      str_detect(merged_event, "^mail_viewed")            ~ "mail_viewed",
+      str_detect(merged_event, "^mail_drag")              ~ "mail_drag",
+      str_detect(merged_event, "^mail_drop")              ~ "mail_drop",
+      str_detect(merged_event, "^folder_viewed")          ~ "folder_viewed",
+      str_detect(merged_event, "^folder_unfolded")        ~ "folder_unfolded",
+      str_detect(merged_event, "^folder_folded")          ~ "folder_folded",
+      str_detect(merged_event, "^keypress")               ~ "keypress",
+      str_detect(merged_event, "^textbox_onfocus")        ~ "textbox_onfocus",
+      str_detect(merged_event, "^textbox_killfocus")      ~ "textbox_killfocus",
+      str_detect(merged_event, "^toolbar")                ~ "toolbar",
+      merged_event == "button_endtask_txt3"               ~ "button_end_confirm",
+      merged_event == "button_endtask_txt4"               ~ "button_end_cancel",
+      merged_event == "button_nextinquiry_button"         ~ "button_next",
+      str_detect(merged_event, "^button")                 ~ "button_other",
+      TRUE                                                ~ merged_event
+    ),
+    action_int = as.integer(factor(action_recoded))
+  )
+
+# ── Step 2. Outcome Variable ───────────────────────────────────────
 # Dichotomize U01a: score == 3 is correct
 score <- ps1_score_data %>%
   mutate(SEQID   = paste0("US_", SEQID),
@@ -29,7 +53,7 @@ score <- ps1_score_data %>%
   filter(!is.na(score)) %>%
   select(SEQID, score, correct)
 
-# ── Step 2. Prepare Sequences ──────────────────────────────────────
+# ── Step 3. Prepare Sequences ──────────────────────────────────────
 item_data <- ps1_data %>%
   left_join(score, by = "SEQID") %>%
   filter(!is.na(correct))

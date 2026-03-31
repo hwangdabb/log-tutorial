@@ -7,7 +7,7 @@ rm(list = ls())
 # ============================================================
 
 # ── User Configuration ───────────────────────────────────────
-path <- "path/to/your/data/"   # directory containing merged_ps1_1.csv, prgusap1.csv
+path <- "path/to/your/data/"   # directory containing ps1_usa.csv, prgusap1.csv
 # ─────────────────────────────────────────────────────────────
 
 library(dplyr)
@@ -15,7 +15,7 @@ library(tidyr)
 library(ggplot2)
 library(patchwork)
 
-ps1_data       <- read.csv(paste0(path, "preprocessing/merged_ps1_1.csv"), header = TRUE, row.names = 1)
+ps1_data       <- read.csv(paste0(path, "ps1_usa.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
 # -- Step 1. Construct Action Sequences -----------------------------------------

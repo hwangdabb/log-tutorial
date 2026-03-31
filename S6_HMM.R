@@ -2,11 +2,10 @@ rm(list = ls())
 
 # ============================================================
 # Hidden Markov Model: Latent State Inference and GGM Network Analysis
-# Note: run S6_HMM_PREPROCESSING.R first to generate ps1_data2.csv
 # ============================================================
 
 # ── User Configuration ────────────────────────────────────────────
-path <- "path/to/your/data/"   # directory containing ps1_data2.csv, prgusap1.csv
+path <- "path/to/your/data/"   # directory containing ps1_usa.csv, prgusap1.csv
 # ─────────────────────────────────────────────────────────────────
 
 library(depmixS4)
@@ -15,10 +14,35 @@ library(qgraph)
 library(bootnet)
 
 # ── Step 0. Load Data ──────────────────────────────────────────────
-ps1_data       <- read.csv(paste0(path, "preprocessing/ps1_data2.csv"), header = TRUE, row.names = 1)
+ps1_data       <- read.csv(paste0(path, "ps1_usa.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
-# ── Step 1. Outcome variable ───────────────────────────────────────
+# ── Step 1. Action Recoding ────────────────────────────────────────
+# Recode granular merged_event labels into 15 behaviorally meaningful categories.
+ps1_data <- ps1_data %>%
+  mutate(
+    action_recoded = case_when(
+      merged_event == "start"                             ~ "start",
+      str_detect(merged_event, "^mail_viewed")            ~ "mail_viewed",
+      str_detect(merged_event, "^mail_drag")              ~ "mail_drag",
+      str_detect(merged_event, "^mail_drop")              ~ "mail_drop",
+      str_detect(merged_event, "^folder_viewed")          ~ "folder_viewed",
+      str_detect(merged_event, "^folder_unfolded")        ~ "folder_unfolded",
+      str_detect(merged_event, "^folder_folded")          ~ "folder_folded",
+      str_detect(merged_event, "^keypress")               ~ "keypress",
+      str_detect(merged_event, "^textbox_onfocus")        ~ "textbox_onfocus",
+      str_detect(merged_event, "^textbox_killfocus")      ~ "textbox_killfocus",
+      str_detect(merged_event, "^toolbar")                ~ "toolbar",
+      merged_event == "button_endtask_txt3"               ~ "button_end_confirm",
+      merged_event == "button_endtask_txt4"               ~ "button_end_cancel",
+      merged_event == "button_nextinquiry_button"         ~ "button_next",
+      str_detect(merged_event, "^button")                 ~ "button_other",
+      TRUE                                                ~ merged_event
+    ),
+    action_int = as.integer(factor(action_recoded))
+  )
+
+# ── Step 2. Outcome variable ───────────────────────────────────────
 score <- ps1_score_data %>%
   mutate(SEQID   = paste0("US_", SEQID),
          score   = as.integer(U01a000S),
@@ -26,8 +50,7 @@ score <- ps1_score_data %>%
   filter(!is.na(score)) %>%
   select(SEQID, score, correct)
 
-# ── Step 2. Prepare sequences ──────────────────────────────────────
-# action_recoded: action categories recoded from merged_event (see preprocessing)
+# ── Step 3. Prepare sequences ──────────────────────────────────────
 item_data <- ps1_data %>%
   left_join(score, by = "SEQID") %>%
   filter(!is.na(correct)) %>%
@@ -41,7 +64,7 @@ incorrect_action_levels <- levels(factor(incorrect_data$action_recoded))
 cat("Correct N:  ", n_distinct(correct_data$SEQID), "\n")
 cat("Incorrect N:", n_distinct(incorrect_data$SEQID), "\n")
 
-# ── Step 3. Model Selection (K = 1--9) ───────────────────────────────
+# ── Step 4. Model Selection (K = 1--9) ───────────────────────────────
 fit_hmm <- function(data, K, seed = 42) {
   seq_lengths <- data %>%
     group_by(SEQID) %>% summarise(n = n(), .groups = "drop") %>% pull(n)
@@ -74,13 +97,13 @@ ic_incorrect %>%
   ggplot(aes(x = K, y = value, color = criterion)) +
   geom_line() + geom_point() + scale_x_continuous(breaks = 1:9) + theme_bw()
 
-# ── Step 4. Fit Final Model ──────────────────────────────────────────
+# ── Step 5. Fit Final Model ──────────────────────────────────────────
 K <- 9
 
 hmm_correct   <- fit_hmm(correct_data,   K)
 hmm_incorrect <- fit_hmm(incorrect_data, K)
 
-# ── Step 5. Emission and Transition Matrices ─────────────────────────
+# ── Step 6. Emission and Transition Matrices ─────────────────────────
 get_emission_probs <- function(fit, action_levels, K) {
   em <- t(sapply(1:K, function(k) {
     coefs     <- fit@response[[k]][[1]]@parameters$coefficients
@@ -119,7 +142,7 @@ incorrect_table <- top3_table(em_incorrect, "Incorrect")
 trans_correct   <- get_transition(hmm_correct,   K)
 trans_incorrect <- get_transition(hmm_incorrect, K) 
 
-# ── Step 6. Viterbi state Sequences and Group Comparison ─────────────
+# ── Step 7. Viterbi State Sequences and Group Comparison ─────────────
 freq_compare <- bind_rows(
   data.frame(state = as.character(posterior(hmm_correct)$state),
              SEQID = correct_data$SEQID,   group = "Correct"),
@@ -132,11 +155,11 @@ freq_compare <- bind_rows(
 
 print(freq_compare)
 
-# ── Step 7. GGM on Emission Matrices ─────────────────────────────────
+# ── Step 8. GGM on Emission Matrices ─────────────────────────────────
 ggm_correct   <- estimateNetwork(t(em_correct), default = "EBICglasso", threshold = TRUE)
 ggm_incorrect <- estimateNetwork(t(em_incorrect), default = "EBICglasso", threshold = TRUE)
 
-# ── Step 8. Visualize GGM Networks ───────────────────────────────────
+# ── Step 9. Visualize GGM Networks ───────────────────────────────────
 par(mfrow = c(1, 2))
 qgraph(ggm_correct$graph, title = "Correct", labels = paste0("S", 1:K))
 qgraph(ggm_incorrect$graph, title = "Incorrect", labels = paste0("S", 1:K))
