@@ -6,13 +6,15 @@ rm(list = ls())
 # Applied to Party Invitations -- U01a (United States sample)
 # ============================================================
 
+# ── User Configuration ───────────────────────────────────────
+path     <- "path/to/your/data/"      # directory containing merged_ps1_1.csv, prgusap1.csv
+plot_dir <- "path/to/your/figures/"   # directory to save output figures
+# ─────────────────────────────────────────────────────────────
+
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(patchwork)
-
-path     <- "~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/3. Data/"
-plot_dir <- "~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/5. Writing/2. Figure/"
 
 ps1_data       <- read.csv(paste0(path, "preprocessing/merged_ps1_1.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)

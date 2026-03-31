@@ -1,15 +1,18 @@
 rm(list=ls())
 
 # ============================================================
-# Basic Process Indicators: 
+# Basic Process Indicators:
 # Time on Task (ToT), Time to First Action (TFA), Number of Actions (NA)
 # ============================================================
-# Required packages
+
+# ── User Configuration ───────────────────────────────────────────────────────────────
+path <- "path/to/your/data/"   # set to directory containing merged_ps1_1.csv, prgusap1.csv
+# ─────────────────────────────────────────────────────────────────────────────────────
+
 library(dplyr)
 
 # ── 0. Load data ─────────────────────────────────────────────────────────────────────
-path     <- "~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/3. Data/"
-ps1_data <- read.csv(paste0(path, "preprocessing/merged_ps1_1.csv"), header = TRUE, row.names = 1)
+ps1_data       <- read.csv(paste0(path, "preprocessing/merged_ps1_1.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
 # ── 1. Exclude system events ─────────────────────────────────────────────────────────

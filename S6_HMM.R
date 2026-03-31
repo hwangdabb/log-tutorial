@@ -2,15 +2,20 @@ rm(list = ls())
 
 # ============================================================
 # Hidden Markov Model: Latent State Inference and GGM Network Analysis
+# Note: run S6_HMM_PREPROCESSING.R first to generate ps1_data2.csv
 # ============================================================
 
-library(depmixS4)   # Required packages
+# ── User Configuration ────────────────────────────────────────────
+path     <- "path/to/your/data/"      # directory containing ps1_data2.csv, prgusap1.csv
+plot_dir <- "path/to/your/figures/"   # directory to save output figures
+# ─────────────────────────────────────────────────────────────────
+
+library(depmixS4)
 library(tidyverse)
 library(qgraph)
 library(bootnet)
 
 # ── Step 0. Load Data ──────────────────────────────────────────────
-path           <- "~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/3. Data/"
 ps1_data       <- read.csv(paste0(path, "preprocessing/ps1_data2.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
@@ -142,8 +147,7 @@ qgraph(ggm_incorrect$graph, title = "Incorrect", labels = paste0("S", 1:K))
 
 
 
-#### save image ##### 
-plot_dir <- "~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/5. Writing/2. Figure"
+#### save image #####
 
 # 1
 ic_correct$group   <- "Correct"
@@ -200,7 +204,7 @@ plot_transition <- function(tr, title = "") {
     theme(plot.title   = element_text(hjust = 0.5),
           panel.grid   = element_blank(),
           axis.text    = element_text(size = 9),
-          legend.position = "none")  # 범례 제거
+          legend.position = "none")
 }
 
 legend_plot <- ggplot(data.frame(x = 0, y = 0, prob = c(0, 1)),
@@ -225,7 +229,7 @@ get_legend <- function(p) {
 
 shared_legend <- get_legend(legend_plot)
 
-# 각 플롯
+# individual plots
 p1 <- plot_emission(em_correct,       "")
 p2 <- plot_emission(em_incorrect,     "")
 p3 <- plot_transition(trans_correct,   "")
@@ -237,8 +241,8 @@ ggsave(paste0(plot_dir, "/hmm_collect_prob.png"),
        width = 8, height = 10)
 
 # 3
-# state → behavioral label 매핑
-correct_map   <- c("1"="Mail/Folder View", "2"="Submission", 
+# state -> behavioral label mapping
+correct_map   <- c("1"="Mail/Folder View", "2"="Submission",
                    "3"="Mail Drag",        "4"="Button Next",
                    "5"="Start",            "6"="Mail View",
                    "7"="Exploration",      "8"="Mail Drop",  

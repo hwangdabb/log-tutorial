@@ -5,6 +5,11 @@ rm(list = ls())
 # Based on Tang et al. (2020); interpretation following Zhang et al. (2024)
 # ============================================================
 
+# ── User Configuration ────────────────────────────────────────────
+path     <- "path/to/your/data/"      # directory containing merged_ps1_1.csv, prgusap1.csv
+plot_dir <- "path/to/your/figures/"   # directory to save output figures
+# ─────────────────────────────────────────────────────────────────
+
 library(dplyr)
 library(tidyr)
 library(ggplot2)
@@ -12,7 +17,6 @@ library(glmnet)
 library(pls)
 
 # ── Step 0. Load Data ──────────────────────────────────────────────
-path           <- "~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/3. Data/"
 ps1_data       <- read.csv(paste0(path, "preprocessing/merged_ps1_1.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
@@ -319,23 +323,20 @@ print(pls_table)
 
 
 ##### save plot #####
-setwd("~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/5. Writing/2. Figure")
-# Histogram
-png("mds_prediction_accuracy.png", width = 1500, height = 1500, res = 300)
+png(paste0(plot_dir, "mds_prediction_accuracy.png"), width = 1500, height = 1500, res = 300)
 hist(accuracies, breaks = seq(0.9, 1, by = 0.01), xlab = "Prediction Accuracy", main = "")
 dev.off()
 
-png("mds_OSR.png", width = 2700, height = 1500, res = 300)
+png(paste0(plot_dir, "mds_OSR.png"), width = 2700, height = 1500, res = 300)
 print(
   ggplot(osr_results_gg, aes(x = Variable, y = OSR, fill = Model)) +
     geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.6) +
     geom_text(aes(label = round(OSR, 3)), position = position_dodge(width = 0.7), vjust = -0.4) +
     labs(y = expression(paste("O.S.R"))) + theme_bw()
-  
 )
 dev.off()
 
-png("mds_2d_plot.png", width = 1500, height = 1200, res = 300)
+png(paste0(plot_dir, "mds_2d_plot.png"), width = 1500, height = 1200, res = 300)
 print(
   ggplot(plot_df, aes(x = PC1, y = PC2, color = correct)) +
     geom_point() +

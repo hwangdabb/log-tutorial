@@ -3,14 +3,19 @@ rm(list=ls())
 # ============================================================
 # N-gram Analysis: Feature Extraction and Clustering
 # ============================================================
+
+# ── User Configuration ───────────────────────────────────────
+path     <- "path/to/your/data/"      # directory containing merged_ps1_1.csv, prgusap1.csv
+plot_dir <- "path/to/your/figures/"   # directory to save output figures
+# ─────────────────────────────────────────────────────────────
+
 library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
 
 # ── 0. Load data ─────────────────────────────────────────────
-path <- "~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/3. Data/"
-ps1_data <- read.csv(paste0(path, "preprocessing/merged_ps1_1.csv"), header = TRUE, row.names = 1)
+ps1_data       <- read.csv(paste0(path, "preprocessing/merged_ps1_1.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
 # ── 1. Construct action sequences per respondent ─────────────
@@ -185,9 +190,7 @@ ggplot(interaction_summary, aes(x = cluster, y = mean_PV1,
   labs(x = "", y = "Mean PS-TRE Proficiency (PV1)", color = "Correctness") + theme_bw()
 
 ##### save plot #####
-setwd("~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/5. Writing/2. Figure")
-# Histogram
-png("ngram_cluster_boxplot.png", width = 1500, height = 1200, res = 300)
+png(paste0(plot_dir, "ngram_cluster_boxplot.png"), width = 1500, height = 1200, res = 300)
 print(
   ggplot(cluster_result, aes(x = cluster, y = PV1, fill = cluster)) +
     geom_boxplot() +
@@ -195,7 +198,7 @@ print(
 )
 dev.off()
 
-png("ngram_cluster_score_boxplot.png", width = 1500, height = 1200, res = 300)
+png(paste0(plot_dir, "ngram_cluster_score_boxplot.png"), width = 1500, height = 1200, res = 300)
 print(
   ggplot(cluster_result2, aes(x = cluster, y = PV1, fill = Correctness)) +
     geom_boxplot() +
@@ -203,7 +206,7 @@ print(
 )
 dev.off()
 
-png("ngram_twoway_interaction.png", width = 1500, height = 1200, res = 300)
+png(paste0(plot_dir, "ngram_twoway_interaction.png"), width = 1500, height = 1200, res = 300)
 print(
   ggplot(interaction_summary, aes(x = cluster, y = mean_PV1,
                                   color = correct, group = correct)) +

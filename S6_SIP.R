@@ -3,7 +3,13 @@ rm(list = ls())
 # ============================================================
 # Subtask Identification Procedure (SIP)
 # Following Wang et al. (2023)
+# Note: run S6_HMM_PREPROCESSING.R first to generate ps1_data2.csv
 # ============================================================
+
+# ── User Configuration ────────────────────────────────────────────
+path     <- "path/to/your/data/"      # directory containing ps1_data2.csv, prgusap1.csv
+plot_dir <- "path/to/your/figures/"   # directory to save output figures
+# ─────────────────────────────────────────────────────────────────
 
 library(torch)
 library(tidyverse)
@@ -12,7 +18,6 @@ library(patchwork)
 library(gridExtra)
 
 # ── Step 0. Load Data ──────────────────────────────────────────────
-path           <- "~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/3. Data/"
 ps1_data       <- read.csv(paste0(path, "preprocessing/ps1_data2.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
@@ -321,8 +326,7 @@ p_view <- make_density_plot(strategy_full, "VIEW_ONLY", "#fde8e8", "#C0392B")
 grid.arrange(p_drag, p_view, ncol = 2)
 
 
-#### save plot 
-plot_dir <- "~/Desktop/대학원/3. 개인연구/2. Log_Tutorial/5. Writing/2. Figure/"
+#### save plot
 ggsave(paste0(plot_dir, "sip_entropy.png"), p1_combined, width = 12, height = 9, dpi = 300)
 ggsave(paste0(plot_dir, "sip_subtask_seq.png"), p2, width = 9, height = 5, dpi = 300)
 
