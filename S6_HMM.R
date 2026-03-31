@@ -6,8 +6,7 @@ rm(list = ls())
 # ============================================================
 
 # ── User Configuration ────────────────────────────────────────────
-path     <- "path/to/your/data/"      # directory containing ps1_data2.csv, prgusap1.csv
-plot_dir <- "path/to/your/figures/"   # directory to save output figures
+path <- "path/to/your/data/"   # directory containing ps1_data2.csv, prgusap1.csv
 # ─────────────────────────────────────────────────────────────────
 
 library(depmixS4)
@@ -147,9 +146,9 @@ qgraph(ggm_incorrect$graph, title = "Incorrect", labels = paste0("S", 1:K))
 
 
 
-#### save image #####
+# ── Step 9. Additional Visualizations ────────────────────────────────
 
-# 1
+# IC criterion plot (faceted by group)
 ic_correct$group   <- "Correct"
 ic_incorrect$group <- "Incorrect"
 ic_all             <- bind_rows(ic_correct, ic_incorrect)
@@ -163,10 +162,9 @@ p_ic <- ic_all %>%
   labs(x = "Number of States (K)", y = "Information Criterion",
        color = NULL, linetype = NULL) +
   theme_bw()
+print(p_ic)
 
-ggsave(paste0(plot_dir, "/hmm_ic_plot.png"), plot = p_ic, width = 6, height = 3, dpi = 300)
-
-# 2
+# Emission and transition heatmaps
 plot_emission <- function(em, title = "") {
   em_df <- as.data.frame(em) %>%
     rownames_to_column("state") %>%
@@ -235,12 +233,9 @@ p2 <- plot_emission(em_incorrect,     "")
 p3 <- plot_transition(trans_correct,   "")
 p4 <- plot_transition(trans_incorrect, "")
 collect_plot <- (p1 | p3) / (p2 | p4)
+print(collect_plot + plot_layout(guides = "collect") & theme(legend.position = "right"))
 
-ggsave(paste0(plot_dir, "/hmm_collect_prob.png"),
-       collect_plot + plot_layout(guides = "collect") & theme(legend.position = "right"),
-       width = 8, height = 10)
-
-# 3
+# State frequency comparison by behavioral label
 # state -> behavioral label mapping
 correct_map   <- c("1"="Mail/Folder View", "2"="Submission",
                    "3"="Mail Drag",        "4"="Button Next",
@@ -267,16 +262,15 @@ freq_labeled <- bind_rows(
   group_by(group, label) %>%
   summarise(avg_freq = mean(n), .groups = "drop")
 
-plot3 = ggplot(freq_labeled, aes(x = label, y = avg_freq, fill = group)) +
+plot3 <- ggplot(freq_labeled, aes(x = label, y = avg_freq, fill = group)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(x = "State", y = "Average Frequency", fill = NULL) +
-  scale_fill_manual(values = c("Correct" = "#00BFC4", "Incorrect" = "#F8766D")) + 
+  scale_fill_manual(values = c("Correct" = "#00BFC4", "Incorrect" = "#F8766D")) +
   scale_x_discrete(guide = guide_axis(angle = 45)) +
   theme_bw()
-ggsave(paste0(plot_dir, "/hmm_viterbi_freq.png"), plot = plot3, width = 9, height = 5)
+print(plot3)
 
-# 4
-png(paste0(plot_dir, "/hmm_network.png"), width = 9, height = 5, units = "in", res = 300)
+# GGM network visualization
 par(mfrow = c(1, 2))
 qgraph(ggm_correct$graph,
        layout     = "spring",
@@ -286,5 +280,3 @@ qgraph(ggm_incorrect$graph,
        layout     = "spring",
        labels     = paste0("S", 1:K),
        color      = "#F8766D")
-dev.off()
-

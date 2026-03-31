@@ -5,8 +5,7 @@ rm(list=ls())
 # ============================================================
 
 # ── User Configuration ───────────────────────────────────────
-path     <- "path/to/your/data/"      # directory containing merged_ps1_1.csv, prgusap1.csv
-plot_dir <- "path/to/your/figures/"   # directory to save output figures
+path <- "path/to/your/data/"   # directory containing merged_ps1_1.csv, prgusap1.csv
 # ─────────────────────────────────────────────────────────────
 
 library(dplyr)
@@ -188,30 +187,3 @@ ggplot(interaction_summary, aes(x = cluster, y = mean_PV1,
   geom_line() + geom_point() +
   geom_errorbar(aes(ymin = mean_PV1 - se_PV1, ymax = mean_PV1 + se_PV1), width = 0.15) +
   labs(x = "", y = "Mean PS-TRE Proficiency (PV1)", color = "Correctness") + theme_bw()
-
-##### save plot #####
-png(paste0(plot_dir, "ngram_cluster_boxplot.png"), width = 1500, height = 1200, res = 300)
-print(
-  ggplot(cluster_result, aes(x = cluster, y = PV1, fill = cluster)) +
-    geom_boxplot() +
-    labs(x = "", y = "PS-TRE Proficiency (PV1)") + theme_bw()
-)
-dev.off()
-
-png(paste0(plot_dir, "ngram_cluster_score_boxplot.png"), width = 1500, height = 1200, res = 300)
-print(
-  ggplot(cluster_result2, aes(x = cluster, y = PV1, fill = Correctness)) +
-    geom_boxplot() +
-    labs(x = "", y = "PS-TRE Proficiency (PV1)") + theme_bw()
-)
-dev.off()
-
-png(paste0(plot_dir, "ngram_twoway_interaction.png"), width = 1500, height = 1200, res = 300)
-print(
-  ggplot(interaction_summary, aes(x = cluster, y = mean_PV1,
-                                  color = correct, group = correct)) +
-    geom_line() + geom_point() +
-    geom_errorbar(aes(ymin = mean_PV1 - se_PV1, ymax = mean_PV1 + se_PV1), width = 0.15) +
-    labs(x = "", y = "Mean PS-TRE Proficiency (PV1)", color = "Correctness") + theme_bw()
-)
-dev.off()

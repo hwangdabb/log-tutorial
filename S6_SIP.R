@@ -7,8 +7,7 @@ rm(list = ls())
 # ============================================================
 
 # ── User Configuration ────────────────────────────────────────────
-path     <- "path/to/your/data/"      # directory containing ps1_data2.csv, prgusap1.csv
-plot_dir <- "path/to/your/figures/"   # directory to save output figures
+path <- "path/to/your/data/"   # directory containing ps1_data2.csv, prgusap1.csv
 # ─────────────────────────────────────────────────────────────────
 
 library(torch)
@@ -325,14 +324,5 @@ p_view <- make_density_plot(strategy_full, "VIEW_ONLY", "#fde8e8", "#C0392B")
 
 grid.arrange(p_drag, p_view, ncol = 2)
 
-
-#### save plot
-ggsave(paste0(plot_dir, "sip_entropy.png"), p1_combined, width = 12, height = 9, dpi = 300)
-ggsave(paste0(plot_dir, "sip_subtask_seq.png"), p2, width = 9, height = 5, dpi = 300)
-
-png(paste0(plot_dir, "sip_density.png"),
-    width = 9, height = 5, units = "in", res = 300)
-grid.arrange(p_drag, p_view, ncol = 2)
-dev.off()
 
 

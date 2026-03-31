@@ -6,8 +6,7 @@ rm(list = ls())
 # ============================================================
 
 # ── User Configuration ────────────────────────────────────────────
-path     <- "path/to/your/data/"      # directory containing merged_ps1_1.csv, prgusap1.csv
-plot_dir <- "path/to/your/figures/"   # directory to save output figures
+path <- "path/to/your/data/"   # directory containing merged_ps1_1.csv, prgusap1.csv
 # ─────────────────────────────────────────────────────────────────
 
 library(dplyr)
@@ -321,28 +320,3 @@ for (k in 1:n_comp) {
 print("=== Table: PLS Pattern Interpretation ===")
 print(pls_table)
 
-
-##### save plot #####
-png(paste0(plot_dir, "mds_prediction_accuracy.png"), width = 1500, height = 1500, res = 300)
-hist(accuracies, breaks = seq(0.9, 1, by = 0.01), xlab = "Prediction Accuracy", main = "")
-dev.off()
-
-png(paste0(plot_dir, "mds_OSR.png"), width = 2700, height = 1500, res = 300)
-print(
-  ggplot(osr_results_gg, aes(x = Variable, y = OSR, fill = Model)) +
-    geom_bar(stat = "identity", position = position_dodge(width = 0.7), width = 0.6) +
-    geom_text(aes(label = round(OSR, 3)), position = position_dodge(width = 0.7), vjust = -0.4) +
-    labs(y = expression(paste("O.S.R"))) + theme_bw()
-)
-dev.off()
-
-png(paste0(plot_dir, "mds_2d_plot.png"), width = 1500, height = 1200, res = 300)
-print(
-  ggplot(plot_df, aes(x = PC1, y = PC2, color = correct)) +
-    geom_point() +
-    scale_color_manual(values = c("Incorrect" = "#F8766D",
-                                  "Correct"   = "#00BFC4")) +
-    labs(x = "PF1", y = "PF2", color = "Correctness") +
-    theme_bw()
-)
-dev.off()

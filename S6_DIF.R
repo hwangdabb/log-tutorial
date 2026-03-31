@@ -7,8 +7,7 @@ rm(list = ls())
 # ============================================================
 
 # ── User Configuration ───────────────────────────────────────
-path     <- "path/to/your/data/"      # directory containing merged_ps1_1.csv, prgusap1.csv
-plot_dir <- "path/to/your/figures/"   # directory to save output figures
+path <- "path/to/your/data/"   # directory containing merged_ps1_1.csv, prgusap1.csv
 # ─────────────────────────────────────────────────────────────
 
 library(dplyr)
@@ -250,14 +249,4 @@ p_drag <- ggplot(drag_df, aes(x=eta_tilde, fill=strategy, color=strategy)) +
   labs(x="Nuisance Ability", y="Density", fill="Strategy", color="Strategy") +
   theme_bw()
 print(p_drag)
-
-# -- Save Figures ---------------------------------------------------------------
-ggsave(paste0(plot_dir, "dif_l2_trace.png"),
-       p_l2, width=7, height=4, dpi=300)
-
-ggsave(paste0(plot_dir, "dif_nuisance_age_drag.png"),
-       p_age | p_drag, width=12, height=5, dpi=300)
-
-ggsave(paste0(plot_dir, "dif_theta_corrected.png"),
-       p_theta, width=6, height=5, dpi=300)
 
