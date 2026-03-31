@@ -27,7 +27,7 @@ sequences <- ps1_data %>%
   filter(event_type != "start") %>%
   arrange(SEQID, timestamp) %>%
   group_by(SEQID) %>%
-  summarise(seq = list(merged_event), .groups = "drop")
+  summarise(seq = list(action_event), .groups = "drop")
 
 seq_list <- sequences$seq   # list of n action sequences
 

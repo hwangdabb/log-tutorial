@@ -23,7 +23,7 @@ ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 # Recode granular merged_event labels into 15 behaviorally meaningful categories.
 ps1_data <- ps1_data %>%
   mutate(
-    action_recoded = case_when(
+    merged_event = case_when(
       merged_event == "start"                             ~ "start",
       str_detect(merged_event, "^mail_viewed")            ~ "mail_viewed",
       str_detect(merged_event, "^mail_drag")              ~ "mail_drag",
@@ -41,7 +41,7 @@ ps1_data <- ps1_data %>%
       str_detect(merged_event, "^button")                 ~ "button_other",
       TRUE                                                ~ merged_event
     ),
-    action_int = as.integer(factor(action_recoded))
+    action_int = as.integer(factor(merged_event))
   )
 
 # ── Step 2. Outcome Variable ───────────────────────────────────────
@@ -58,13 +58,13 @@ item_data <- ps1_data %>%
   left_join(score, by = "SEQID") %>%
   filter(!is.na(correct))
 
-actions    <- sort(unique(item_data$action_recoded))
+actions    <- sort(unique(item_data$merged_event))
 M          <- length(actions)
 action_idx <- setNames(seq_along(actions), actions)
 
 seqs <- item_data %>%
   group_by(SEQID, correct) %>%
-  summarise(seq = list(action_idx[action_recoded]), .groups = "drop") %>%
+  summarise(seq = list(action_idx[merged_event]), .groups = "drop") %>%
   mutate(seq_len = map_int(seq, length)) %>%
   filter(seq_len >= 10) # fewer than ten actions are excluded
 

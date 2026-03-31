@@ -23,7 +23,7 @@ sequences <- ps1_data %>%
   filter(event_type != "start") %>%
   arrange(SEQID, timestamp) %>%
   group_by(SEQID) %>%
-  summarise(seq = list(merged_event), .groups = "drop")
+  summarise(seq = list(action_event), .groups = "drop")
 
 seq_list <- sequences$seq
 
@@ -170,8 +170,8 @@ theta_corrected <- as.numeric(scale(residuals(lm(theta_hat ~ eta_hat))))
 drag_use <- ps1_data %>%
   group_by(SEQID) %>%
   summarise(
-    used_dragdrop = as.integer(any(grepl("mail_drag|mail_drop", merged_event))),
-    n_dragdrop    = sum(grepl("mail_drag|mail_drop", merged_event)),
+    used_dragdrop = as.integer(any(grepl("mail_drag|mail_drop", action_event))),
+    n_dragdrop    = sum(grepl("mail_drag|mail_drop", action_event)),
     .groups = "drop"
   )
 

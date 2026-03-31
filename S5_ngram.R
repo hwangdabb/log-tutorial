@@ -22,7 +22,7 @@ sequences <- ps1_data %>%
   filter(event_type != "start") %>%
   arrange(SEQID, timestamp) %>%
   group_by(SEQID) %>%
-  summarise(seq = list(merged_event), .groups = "drop")
+  summarise(seq = list(action_event), .groups = "drop")
 
 # ── 2. Extract n-grams ───────────────────────────────────────
 # Boundary tokens START/END preserve initial and terminal behaviors
