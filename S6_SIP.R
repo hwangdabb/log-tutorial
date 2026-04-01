@@ -19,33 +19,7 @@ library(gridExtra)
 ps1_data       <- read.csv(paste0(path, "ps1_usa.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
-# ── Step 1. Action Recoding ────────────────────────────────────────
-# Recode granular merged_event labels into 15 behaviorally meaningful categories.
-ps1_data <- ps1_data %>%
-  mutate(
-    merged_event = case_when(
-      merged_event == "start"                             ~ "start",
-      str_detect(merged_event, "^mail_viewed")            ~ "mail_viewed",
-      str_detect(merged_event, "^mail_drag")              ~ "mail_drag",
-      str_detect(merged_event, "^mail_drop")              ~ "mail_drop",
-      str_detect(merged_event, "^folder_viewed")          ~ "folder_viewed",
-      str_detect(merged_event, "^folder_unfolded")        ~ "folder_unfolded",
-      str_detect(merged_event, "^folder_folded")          ~ "folder_folded",
-      str_detect(merged_event, "^keypress")               ~ "keypress",
-      str_detect(merged_event, "^textbox_onfocus")        ~ "textbox_onfocus",
-      str_detect(merged_event, "^textbox_killfocus")      ~ "textbox_killfocus",
-      str_detect(merged_event, "^toolbar")                ~ "toolbar",
-      merged_event == "button_endtask_txt3"               ~ "button_end_confirm",
-      merged_event == "button_endtask_txt4"               ~ "button_end_cancel",
-      merged_event == "button_nextinquiry_button"         ~ "button_next",
-      str_detect(merged_event, "^button")                 ~ "button_other",
-      TRUE                                                ~ merged_event
-    ),
-    action_int = as.integer(factor(merged_event))
-  )
-
-# ── Step 2. Outcome Variable ───────────────────────────────────────
-# Dichotomize U01a: score == 3 is correct
+# ── Step 1. Outcome variable ───────────────────────────────────────
 score <- ps1_score_data %>%
   mutate(SEQID   = paste0("US_", SEQID),
          score   = as.integer(U01a000S),
@@ -53,7 +27,7 @@ score <- ps1_score_data %>%
   filter(!is.na(score)) %>%
   select(SEQID, score, correct)
 
-# ── Step 3. Prepare Sequences ──────────────────────────────────────
+# ── Step 2. Prepare Sequences ──────────────────────────────────────
 item_data <- ps1_data %>%
   left_join(score, by = "SEQID") %>%
   filter(!is.na(correct))
@@ -210,8 +184,11 @@ for (k in seq_len(Rc)) {
   cat(sprintf("  Cluster %d: %s\n", k, paste(top3, collapse = " | ")))
 }
 
-# Assign labels based on inspection
-subtask_names <- c("1" = "DRAG_DROP_VIEW", "2" = "VIEW", "3" = "BUTTON_END")
+# Inspect cluster centroids to assign substantive labels.
+# NOTE: Cluster numbers (1, 2, 3) may vary across runs even with set.seed,
+# as k-means label assignment is arbitrary. Verify the mapping below
+# by checking the top actions printed above before proceeding.
+subtask_names <- c("1" = "BUTTON_END", "2" = "DRAG_DROP_VIEW", "3" = "VIEW")
 subtask_colors <- c("DRAG_DROP_VIEW" = "#80cbc4", "VIEW" = "#ef9a9a", "BUTTON_END" = "gray")
 
 # ── Reconstruct Subtask Sequences ─────────────────────────────────
@@ -309,7 +286,7 @@ rt_df <- item_data %>%
 
 age_df <- ps1_score_data %>%
   mutate(SEQID = paste0("US_", SEQID)) %>%
-  select(SEQID, age = AGEG10LFS)
+  dplyr::select(SEQID, age = AGEG10LFS)
 
 strategy_full <- subtask_seqs %>%
   mutate(strategy = ifelse(str_detect(subtask_seq, "DRAG_DROP_VIEW"), "DRAG_DROP", "VIEW_ONLY")) %>%
@@ -347,6 +324,3 @@ p_drag <- make_density_plot(strategy_full, "DRAG_DROP", "#d6f5f5", "#00868B")
 p_view <- make_density_plot(strategy_full, "VIEW_ONLY", "#fde8e8", "#C0392B")
 
 grid.arrange(p_drag, p_view, ncol = 2)
-
-
-
