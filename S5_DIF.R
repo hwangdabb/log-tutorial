@@ -142,6 +142,7 @@ for (step in seq_len(min(K, 25))) {
 }
 cat(sprintf("Selected: PC%s\n", paste(selected, collapse=", PC")))
 
+# these labels reflect results from the U.S. sample as reported      
 step_labels <- data.frame(
   n_features = c(1, 2, 3),
   label      = c("PC1\np=0.0001", "PC2\np=0.0383", "PC6\np=0.1741"),
