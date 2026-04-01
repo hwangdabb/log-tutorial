@@ -78,41 +78,23 @@ compute_dissimilarity_matrix <- function(seqs) {
 
 D <- compute_dissimilarity_matrix(seq_list)
 
-# ── 4. Outcome variable ──────────────────────────────────────
-# Dichotomize U01a: score > 0 = correct (He et al., 2019)
-score <- ps1_score_data %>%
-  mutate(SEQID   = paste0("US_", SEQID),
-         score   = as.integer(U01a000S),
-         correct = as.integer(score == 3)) %>%
-  filter(!is.na(score)) %>%
-  select(SEQID, score, correct)
-
 # ── Step 3. Extract K Principal MDS Features ────────────────────────
 # Following Tang et al. (2020): apply cmdscale to obtain MDS coordinates,
 # then rotate via PCA to extract principal components.
 # K is ideally chosen by cross-validation; here fixed at K = 50.
 
 K       <- 50
-mds_fit <- cmdscale(as.dist(D), k = K)                    # dissimilarity -> Euclidean coordinates
-pca_fit <- prcomp(mds_fit, center = TRUE, scale. = FALSE)  # PCA rotation
+mds_fit <- cmdscale(as.dist(D), k = K, eig = TRUE)                # dissimilarity -> Euclidean coordinates
+pca_fit <- prcomp(mds_fit$points, center = TRUE, scale. = FALSE)  # PCA rotation
+
+cat(sprintf("GOF (K=%d): %.3f, %.3f\n", K, mds_fit$GOF[1], mds_fit$GOF[2]))
+
+stress_fit <- mds(as.dist(D), ndim = K, type = "ratio")
+cat(sprintf("Stress-1 (K=%d): %.4f\n", K, stress_fit$stress))
 
 pca_feature <- as.data.frame(pca_fit$x[, 1:K]) %>%
   mutate(SEQID = sequences$SEQID) %>%
   relocate(SEQID)
-
-plot_df <- pca_feature %>%
-  select(SEQID, PC1, PC2) %>%
-  left_join(score, by = "SEQID") %>%
-  filter(!is.na(correct)) %>%
-  mutate(correct = factor(correct, levels = c(0, 1),
-                          labels = c("Incorrect", "Correct")))
-
-ggplot(plot_df, aes(x = PC1, y = PC2, color = correct)) +
-  geom_point() +
-  scale_color_manual(values = c("Incorrect" = "#F8766D",
-                                "Correct"   = "#00BFC4")) +
-  labs(x = "PF1", y = "PF2", color = "Correctness") +
-  theme_bw()
 
 # ── Step 4. Feature Interpretation ──────────────────────────────────
 # PC1: Attentiveness
@@ -141,7 +123,7 @@ pc2_actions <- data.frame(
   Low_Freq    = as.integer(sort(table(low_seq),  decreasing = TRUE)[1:5])
 )
 
-pc2_actions
+print(pc2_actions)
 
 # ── Step 5. Outcome and Background Variables ────────────────────────
 # - correct:  binary item score (full credit = score 3 on U01a)
@@ -151,7 +133,8 @@ pc2_actions
 score <- ps1_score_data %>%
   mutate(
     SEQID    = paste0("US_", SEQID),
-    correct  = as.integer(U01a000S == 3),
+    score   = as.integer(U01a000S),
+    correct = as.integer(score == 3),
     numeracy = rowMeans(select(., starts_with("PVNUM")), na.rm = TRUE),
     literacy = rowMeans(select(., starts_with("PVLIT")), na.rm = TRUE),
     age      = suppressWarnings(as.numeric(AGEG5LFS)),
@@ -162,6 +145,20 @@ score <- ps1_score_data %>%
   filter(!is.na(correct), !is.na(numeracy), !is.na(age),
          !is.na(yrs_edu), !is.na(ict_home), !is.na(ict_work)) %>%
   select(SEQID, correct, numeracy, literacy, age, yrs_edu, ict_home, ict_work)
+
+plot_df <- pca_feature %>%
+  select(SEQID, PC1, PC2) %>%
+  left_join(score, by = "SEQID") %>%
+  filter(!is.na(correct)) %>%
+  mutate(correct = factor(correct, levels = c(0, 1),
+                          labels = c("Incorrect", "Correct")))
+
+ggplot(plot_df, aes(x = PC1, y = PC2, color = correct)) +
+  geom_point() +
+  scale_color_manual(values = c("Incorrect" = "#F8766D",
+                                "Correct"   = "#00BFC4")) +
+  labs(x = "PF1", y = "PF2", color = "Correctness") +
+  theme_bw()
 
 # ── Step 6. Construct Validity of MDS Features ───
 # Create binary indicators (presence/absence) for the top 50 most frequent actions.
@@ -251,7 +248,7 @@ osr_results_gg <- osr_results %>%
                names_to = "Model", values_to = "OSR") %>%
   mutate(
     Model = factor(Model, levels = c("baseline_OSR", "process_OSR"),
-                          labels = c("Response", "MDS")),
+                   labels = c("Response", "MDS")),
     Variable = factor(variable, levels = ext_vars, 
                       labels = c("Numeracy", "Literacy", "Age", "Education (Years)", 
                                  "ICT (Home)", "ICT (Work)"))
@@ -319,4 +316,3 @@ for (k in 1:n_comp) {
 
 print("=== Table: PLS Pattern Interpretation ===")
 print(pls_table)
-
