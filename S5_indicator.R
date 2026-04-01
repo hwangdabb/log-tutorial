@@ -10,6 +10,8 @@ path <- "path/to/your/data/"   # set to directory containing ps1_usa.csv, prgusa
 # ─────────────────────────────────────────────────────────────────────────────────────
 
 library(dplyr)
+library(ggplot2)
+library(dplyr)
 
 # ── 0. Load data ─────────────────────────────────────────────────────────────────────
 ps1_data       <- read.csv(paste0(path, "ps1_usa.csv"), header = TRUE, row.names = 1)
@@ -48,25 +50,3 @@ process_indicators <- ps1_actions %>%
 # ── 3. Preview and summary ────────────────────────────────────────
 head(process_indicators, n = 2)
 summary(process_indicators[, c("ToT", "TFA", "NoA")])
-
-library(ggplot2)
-library(dplyr)
-
-score <- ps1_score_data %>%
-  mutate(SEQID   = paste0("US_", SEQID),
-         score   = as.integer(U01a000S),
-         correct = as.integer(score == 3)) %>%
-  filter(!is.na(score)) %>%
-  select(SEQID, score, correct)
-
-process_indicators %>%
-  left_join(score, by = "SEQID") %>%
-  filter(!is.na(correct)) %>%
-  mutate(NoA_log_std = scale(log(NoA))) %>%  # log변환 후 표준화
-  ggplot(aes(x = NoA_log_std, y = correct)) +
-  geom_smooth(method = "glm", 
-              method.args = list(family = binomial),
-              se = TRUE) +
-  labs(x = "Log-transformed and standardized No. of actions",
-       y = "p(y = 1)") +
-  theme_bw()
