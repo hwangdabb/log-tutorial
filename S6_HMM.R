@@ -12,7 +12,6 @@ library(depmixS4)
 library(tidyverse)
 library(qgraph)
 library(bootnet)
-library(dplyr)
 
 # ── Step 0. Load Data ──────────────────────────────────────────────
 # Requires merged_event column — run preprocessing.R first if not present.
