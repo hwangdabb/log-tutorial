@@ -12,6 +12,7 @@ path <- "path/to/your/data/"   # directory containing ps1_usa.csv, prgusap1.csv
 library(dplyr)
 library(tidyr)
 library(ggplot2)
+library(smacof)
 library(glmnet)
 library(pls)
 
