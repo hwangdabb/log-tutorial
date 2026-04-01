@@ -15,6 +15,7 @@ library(tidyr)
 library(ggplot2)
 library(patchwork)
 
+# ── Step 0. Load data ──────────────────────────────────────────────
 ps1_data       <- read.csv(paste0(path, "ps1_usa.csv"), header = TRUE, row.names = 1)
 ps1_score_data <- read.csv(paste0(path, "prgusap1.csv"), row.names = 1)
 
