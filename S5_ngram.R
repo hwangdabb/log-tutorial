@@ -163,27 +163,28 @@ ggplot(cluster_result, aes(x = cluster, y = PV1, fill = cluster)) +
 # -- PV1 by correctness nested in cluster ----------
 cluster_result2 <- cluster_result %>%
   filter(!is.na(correct), !is.na(PV1)) %>%
-  mutate(Correctness = factor(correct, levels = c(0, 1), labels = c("Incorrect", "Correct")))
+  mutate(Correctness = factor(correct, levels = c(0, 1), labels = c("Incorrect", "Correct")),
+         cluster = factor(cluster))
 
 ggplot(cluster_result2, aes(x = cluster, y = PV1, fill = Correctness)) +
   geom_boxplot() +
   labs(x = "", y = "PS-TRE Proficiency (PV1)") + theme_bw()
 
 # -- Two-way ANOVA: cluster × correctness ----------
-twoway_aov <- aov(PV1 ~ cluster * correct, data = cluster_result2)
+twoway_aov <- aov(PV1 ~ cluster * Correctness, data = cluster_result2)
 summary(twoway_aov)
 TukeyHSD(twoway_aov)
 
 # -- Figure 3: Interaction plot --------------------------------
 interaction_summary <- cluster_result2 %>%
-  group_by(cluster, correct) %>%
+  group_by(cluster, Correctness) %>%
   summarise(
     mean_PV1 = mean(PV1, na.rm = TRUE), se_PV1 = sd(PV1, na.rm = TRUE) / sqrt(n()),
     .groups  = "drop"
   )
 
 ggplot(interaction_summary, aes(x = cluster, y = mean_PV1,
-                                color = correct, group = correct)) +
+                                color = Correctness, group = Correctness)) +
   geom_line() + geom_point() +
   geom_errorbar(aes(ymin = mean_PV1 - se_PV1, ymax = mean_PV1 + se_PV1), width = 0.15) +
   labs(x = "", y = "Mean PS-TRE Proficiency (PV1)", color = "Correctness") + theme_bw()
