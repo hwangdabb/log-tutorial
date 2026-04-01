@@ -175,7 +175,7 @@ twoway_aov <- aov(PV1 ~ cluster * Correctness, data = cluster_result2)
 summary(twoway_aov)
 TukeyHSD(twoway_aov)
 
-# -- Figure 3: Interaction plot --------------------------------
+# -- Interaction plot --------------------------------
 interaction_summary <- cluster_result2 %>%
   group_by(cluster, Correctness) %>%
   summarise(
