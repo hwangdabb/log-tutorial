@@ -10,7 +10,6 @@ path <- "path/to/your/data/"   # directory containing ps1_usa.csv, prgusap1.csv
 
 library(dplyr)
 library(tidyr)
-library(stringr)
 library(ggplot2)
 
 # ── 0. Load data ─────────────────────────────────────────────
