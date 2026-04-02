@@ -26,12 +26,12 @@ Place the following two files in your data directory:
 | File | Section | Method |
 |------|---------|--------|
 | `preprocessing.R` | — | Action recoding: collapses `action_event` into 15 categories (`merged_event`). Run once before `S6_HMM.R` or `S6_SIP.R`. |
-| `S4_indicator.R` | §5.1 | Descriptive Process Indicators (ToT, TFA, NoA) |
+| `S5_indicator.R` | §5.1 | Descriptive Process Indicators (ToT, TFA, NoA) |
 | `S5_ngram.R` | §5.2 | N-gram Analysis with TF-ISF weighting and K-means clustering |
 | `S5_MDS.R` | §5.3 | Multidimensional Scaling (OSS dissimilarity + PCA rotation) |
+| `S5_DIF.R` | §5.4 | DIF Analysis with process features (MDS + forward stepwise selection) |
 | `S6_HMM.R` | §6.1 | Hidden Markov Models + GGM network analysis |
 | `S6_SIP.R` | §6.2 | Subtask Identification Procedure (GRU-based entropy segmentation) |
-| `S6_DIF.R` | §6.3 | DIF Analysis with process features (MDS + forward stepwise selection) |
 
 ---
 
