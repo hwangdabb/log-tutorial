@@ -70,7 +70,7 @@ tfisf_bi  <- compute_tfisf(bigrams)
 tfisf_tri <- compute_tfisf(trigrams)
 
 # ── 4. Outcome variable ──────────────────────────────────────
-# Dichotomize U01a: score > 0 = correct (He et al., 2019)
+# Dichotomize U01a: score = 3 = correct 
 score <- ps1_score_data %>%
   mutate(SEQID   = paste0("US_", SEQID),
          score   = as.integer(U01a000S),
