@@ -20,8 +20,9 @@ Place the following two files in your data directory:
 | `prgusap1.csv` | PIAAC background and score data (U.S. sample) |
 
 **How to obtain the data:**
-- 'ps1_usa.csv': The raw PIAAC log files are available via the [GESIS Data Archive](https://search.gesis.org/) (study code: ZA6712) upon registration. After downloading the U.S. ZIP file, use the PIAAC LogDataAnalyzer (LDA) to export the raw log data, then apply the preprocessing steps described in Section 3 of the paper to obtain this file. For a detailed description of the LDA workflow, see Goldhammer et al. (2020, Chapter 10).
-- 'prgusap1.csv': Available from the [OECD PIAAC Data Portal](https://www.oecd.org/en/data/datasets/piaac-1st-cycle-database.html#data) as part of the PIAAC Public Use File (U.S. sample).
+- `ps1_usa.csv`: The raw PIAAC log files are available via the [GESIS Data Archive](https://search.gesis.org/) (study code: ZA6712) upon registration. After downloading the U.S. ZIP file, use the PIAAC LogDataAnalyzer (LDA), available from the OECD 
+PIAAC Log File Website, to export the raw log data, then apply the preprocessing steps described in Section 3 of the paper to obtain this file. For a detailed description of the LDA workflow, see Goldhammer et al. (2020, Chapter 10).
+- `prgusap1.csv`: Available from the [OECD PIAAC Data Portal](https://www.oecd.org/en/data/datasets/piaac-1st-cycle-database.html#data) as part of the PIAAC Public Use File (U.S. sample).
 
 ---
 
