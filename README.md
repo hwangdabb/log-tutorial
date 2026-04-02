@@ -10,7 +10,7 @@ This repository provides R implementations of six process data analysis methods,
 
 ## Data
 
-The analyses use the **PIAAC 2012 U.S. log-file data**, publicly available from the [OECD PIAAC Data Portal](https://www.oecd.org/skills/piaac/data/).
+The analyses use the **PIAAC 2012 U.S. log-file data**. Place the following two files in your data directory:
 
 Place the following two files in your data directory:
 
@@ -18,6 +18,10 @@ Place the following two files in your data directory:
 |------|-------------|
 | `ps1_usa.csv` | Preprocessed log-file data for item PS1 (U.S. sample) |
 | `prgusap1.csv` | PIAAC background and score data (U.S. sample) |
+
+**How to obtain the data:**
+- ps1_usa.csv: The raw PIAAC log files are available via the GESIS Data Archive (study code: ZA6712) upon registration. After downloading the U.S. ZIP file, use the PIAAC LogDataAnalyzer (LDA) to export the raw log data, then apply the preprocessing steps described in Section 3 of the paper to obtain this file. For a detailed description of the LDA workflow, see Goldhammer et al. (2020, Chapter 10).
+- prgusap1.csv: Available from the OECD PIAAC Data Portal as part of the PIAAC Public Use File (U.S. sample).
 
 ---
 
