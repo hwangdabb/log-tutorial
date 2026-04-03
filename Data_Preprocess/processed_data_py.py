@@ -2,7 +2,10 @@
 #
 # This script implements the common preprocessing pipeline described in the Data Preprocessing section of the paper.
 #
-# It covers three main stages: (1) correcting timestamps disrupted by RESTART events, (2) reducing redundant action patterns into single representative events, and (3) merging consecutive KEYPRESS events and combining event types with their descriptions into unified action labels.
+# It covers three main stages:
+# (1) correcting timestamps disrupted by RESTART events
+# (2) reducing redundant action patterns into single representative events
+# (3) merging consecutive KEYPRESS events and combining event types with their descriptions into unified action labels.
 #
 # The code processes log data from the PS1_1 item (U.S. sample) of the PIAAC Problem Solving in Technology-Rich Environments (PS-TRE) assessment.
 #
