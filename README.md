@@ -30,7 +30,7 @@ PIAAC Log File Website, to export the raw log data, then apply the preprocessing
 
 | File | Section | Method |
 |------|---------|--------|
-| `preprocessing.R` | — | Action recoding: collapses `action_event` into 15 categories (`merged_event`). Run once before `S6_HMM.R` or `S6_SIP.R`. |
+| `S6_Preprocess.R` | — | Action recoding: collapses `action_event` into 15 categories (`merged_event`). Run once before `S6_HMM.R` or `S6_SIP.R`. |
 | `S5_indicator.R` | §5.1 | Descriptive Process Indicators (ToT, TFA, NoA) |
 | `S5_ngram.R` | §5.2 | N-gram Analysis with TF-ISF weighting and K-means clustering |
 | `S5_MDS.R` | §5.3 | Multidimensional Scaling (OSS dissimilarity + PCA rotation) |
@@ -64,7 +64,7 @@ install.packages(c(
    path <- "path/to/your/data/"
    ```
 
-2. If using `S6_HMM.R` or `S6_SIP.R`, run `preprocessing.R` first. This appends the `merged_event` column to `ps1_usa.csv` and only needs to be done once.
+2. If using `S6_HMM.R` or `S6_SIP.R`, run `S6_Preprocess.R` first. This appends the `merged_event` column to `ps1_usa.csv` and only needs to be done once.
 
 ---
 
