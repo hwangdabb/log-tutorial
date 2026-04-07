@@ -1,6 +1,6 @@
-# Process Data Analysis Tutorial — R Code
+# Process Data Analysis Tutorial
 
-Companion code for the paper:
+R and Python preprocessing code and R implementations of six analytical methods, companion to the paper:
 
 > **A Tutorial on Process Data Analysis: Methods and Applications Using PIAAC**
 
@@ -12,7 +12,6 @@ This repository provides R implementations of six process data analysis methods,
 
 The analyses use the **PIAAC 2012 U.S. log-file data**. Place the following two files in your data directory:
 
-Place the following two files in your data directory:
 
 | File | Description |
 |------|-------------|
@@ -28,6 +27,35 @@ PIAAC Log File Website, to export the raw log data, then apply the preprocessing
 
 ## File Structure
 
+### Preprocessing (`Data_Preprocess/`)
+
+| File | Description |
+|------|-------------|
+| `Data_Preprocess/R_Preprocess.R` | Reference R preprocessing implementation |
+| `Data_Preprocess/Python_Preprocess.py` | Reference Python preprocessing implementation |
+
+**Prompts (`Data_Preprocess/prompts/`)**
+
+| File | Description |
+|------|-------------|
+| `prompts/system_prompt.md` | System prompt used for all models |
+| `prompts/prompt_r.md` | User prompt for R code generation |
+| `prompts/prompt_py.md` | User prompt for Python code generation |
+
+| File | Model | Language |
+|------|-------|----------|
+| `scripts/gpt-5.4.R` | GPT-5.4 | R |
+| `scripts/gpt-5.4.py` | GPT-5.4 | Python |
+| `scripts/claude-sonnet-4.6.R` | Claude Sonnet 4.6 | R |
+| `scripts/claude-sonnet-4.6.py` | Claude Sonnet 4.6 | Python |
+| `scripts/gemini-3.1-flash-lite-preview.R` | Gemini 3.1 Flash-Lite | R |
+| `scripts/gemini-3.1-flash-lite-preview.py` | Gemini 3.1 Flash-Lite | Python |
+| `scripts/deepseek-v3.2.R` | DeepSeek v3.2 | R |
+| `scripts/deepseek-v3.2.py` | DeepSeek v3.2 | Python |
+| `scripts/qwen3.5-27b.R` | Qwen 3.5-27b | R |
+| `scripts/qwen3.5-27b.py` | Qwen 3.5-27b | Python |
+
+### Analytical Methods ('/')
 | File | Section | Method |
 |------|---------|--------|
 | `S6_Preprocess.R` | — | Action recoding: collapses `action_event` into 15 categories (`merged_event`). Run once before `S6_HMM.R` or `S6_SIP.R`. |
@@ -40,11 +68,13 @@ PIAAC Log File Website, to export the raw log data, then apply the preprocessing
 
 ---
 
-## Required R Packages
+## Requirements
 
+### R Packages
 ```r
 install.packages(c(
-  "dplyr", "tidyr", "stringr", "ggplot2",      # core data wrangling and visualization
+  "dplyr", "tidyr", "stringr", "ggplot2",       # core data wrangling and visualization
+  "smacof",                                     # S5_MDS: MDS fitting
   "glmnet", "pls",                              # S5_MDS: regularized regression, PLS
   "depmixS4", "qgraph", "bootnet",              # S6_HMM: HMM fitting, network analysis
   "ggExtra", "patchwork", "gridExtra",          # S6_SIP: plot utilities
@@ -55,6 +85,10 @@ install.packages(c(
 > **Note for `S6_SIP.R`:** The `torch` package requires a separate installation step.
 > See the [torch for R installation guide](https://torch.mlverse.org/docs/articles/installation.html).
 
+### Python Packages (Preprocessing only)
+```bash
+pip install pandas numpy
+```
 ---
 
 ## Usage
@@ -70,6 +104,9 @@ install.packages(c(
 
 ## Citation
 
-If you use this code, please cite the paper:
+If you use this code, please cite:
 
-> [citation to be added upon publication]
+> Hwangbo, D., Park, J., Jeon, M., & Jin, I. H. (2026). 
+> A tutorial on process data analysis: Methods and applications 
+> using PIAAC. *Journal of the Korean Statistical Society*. 
+> Submitted.
