@@ -285,8 +285,7 @@ if __name__ == "__main__":
 
     problem_num = 'ps1_1'
     file = 'us_' + problem_num + '.txt'
-    file_path = './00_Data/' + file
-    path_1st = f'./00_Data/us_{problem_num}.pkl'
+    file_path = 'path/to/your/data/' + file
 
     data = pd.read_csv(file_path, sep='\t')
     data.drop(columns=['SEQID'], inplace=True)
@@ -340,7 +339,7 @@ if __name__ == "__main__":
 
     result = fin_data[['SEQID', 'event_type', 'event_description', 'action_event', 'timestamp']]
 
-    path_2nd = f'./00_Data/merged_{problem_num}.csv'
+    path_output = f'./path/to/your/output/merged_{problem_num}.csv'
 
-    result.to_csv(path_2nd)
+    result.to_csv(path_output)
 
