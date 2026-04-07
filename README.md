@@ -94,11 +94,13 @@ pip install pandas numpy
 ## Usage
 
 1. Set `path` at the top of each script to your local data directory:
-   ```r
+```r
    path <- "path/to/your/data/"
-   ```
-
-2. If using `S6_HMM.R` or `S6_SIP.R`, run `S6_Preprocess.R` first. This appends the `merged_event` column to `ps1_usa.csv` and only needs to be done once.
+```
+2. For preprocessing, use `Data_Preprocess/R_Preprocess.R` (R) or 
+   `Data_Preprocess/Python_Preprocess.py` (Python) as the reference 
+   implementation. LLM-generated scripts are in `Data_Preprocess/scripts/`.
+3. If using `S6_HMM.R` or `S6_SIP.R`, run `S6_Preprocess.R` first.
 
 ---
 
