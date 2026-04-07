@@ -323,8 +323,7 @@ process_event_description <- function(description) {
 
 problem_num <- "ps1_1"
 file <- paste0("us_", problem_num, ".txt")
-file_path <- file.path("./00_Data", file)
-path_1st <- file.path("./00_Data", paste0("us_", problem_num, ".pkl"))
+file_path <- file.path("path/to/your/data", file)
 
 data <- read_tsv(file_path, show_col_types = FALSE)
 
@@ -388,5 +387,5 @@ fin_data <- fin_data %>%
 
 result <- fin_data %>% select(SEQID, event_type, event_description, action_event, timestamp)
 
-path_2nd <- file.path("./00_Data", sprintf("merged_%s.csv", problem_num))
-write_csv(result, path_2nd)
+path_output <- file.path("path/to/your/output", sprintf("merged_%s.csv", problem_num))
+write_csv(result, path_output)
