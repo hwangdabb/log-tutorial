@@ -55,7 +55,7 @@ PIAAC Log File Website, to export the raw log data, then apply the preprocessing
 | `scripts/qwen3.5-27b.R` | Qwen 3.5-27b | R |
 | `scripts/qwen3.5-27b.py` | Qwen 3.5-27b | Python |
 
-### Analytical Methods ('/')
+### Analytical Methods (`/`) (R only)
 | File | Section | Method |
 |------|---------|--------|
 | `S6_Preprocess.R` | — | Action recoding: collapses `action_event` into 15 categories (`merged_event`). Run once before `S6_HMM.R` or `S6_SIP.R`. |
