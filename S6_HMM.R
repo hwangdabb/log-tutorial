@@ -24,7 +24,7 @@ score <- ps1_score_data %>%
          score   = as.integer(U01a000S),
          correct = as.integer(score == 3)) %>%
   filter(!is.na(score)) %>%
-  select(SEQID, score, correct)
+  dplyr::select(SEQID, score, correct)
 
 # ── Step 2. Prepare sequences ──────────────────────────────────────
 item_data <- ps1_data %>%
@@ -60,6 +60,8 @@ select_Q <- function(data, Q_range = 1:9, label = "") {
   })
 }
 
+# Note: The following lines may take considerable time.
+# You may skip model selection and set Q manually (e.g., Q <- 9) to proceed to Step 4.
 ic_correct   <- select_Q(correct_data,   label = "Correct")
 ic_incorrect <- select_Q(incorrect_data, label = "Incorrect")
 
