@@ -68,7 +68,7 @@ gru_model <- nn_module(
     self$linear(self$gru(self$embed(x))[[1]])
   }
 )
-
+torch_manual_seed(42)
 model     <- gru_model(M, K)
 optimizer <- optim_rmsprop(model$parameters, lr = 1e-3)
 
@@ -174,8 +174,8 @@ for (i in 1:N) {
 }
 
 Z  <- do.call(rbind, profiles)
-set.seed(42)
 Rc <- 3
+set.seed(42)
 km <- kmeans(sqrt(Z), centers = Rc, nstart = 25, iter.max = 200)
 cluster_labels <- km$cluster
 
@@ -189,7 +189,7 @@ for (k in seq_len(Rc)) {
 # NOTE: Cluster numbers (1, 2, 3) may vary across runs even with set.seed,
 # as k-means label assignment is arbitrary. Verify the mapping below
 # by checking the top actions printed above before proceeding.
-subtask_names <- c("1" = "BUTTON_END", "2" = "DRAG_DROP_VIEW", "3" = "VIEW")
+subtask_names <- c("1" = "DRAG_DROP_VIEW", "2" = "VIEW", "3" = "BUTTON_END")
 subtask_colors <- c("DRAG_DROP_VIEW" = "#80cbc4", "VIEW" = "#ef9a9a", "BUTTON_END" = "gray")
 
 # ── Reconstruct Subtask Sequences ─────────────────────────────────
@@ -251,7 +251,6 @@ p1_incorrect <- get_entropy_plot(incorrect_idx)
 p1_combined <- p1_correct / p1_incorrect
 
 print(p1_combined)
-
 
 # ── Figure 2. Subtask Sequence Visualization by Response Outcome ──
 seq_long <- subtask_seqs %>%
