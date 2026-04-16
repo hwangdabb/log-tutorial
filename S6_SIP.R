@@ -75,6 +75,7 @@ optimizer <- optim_rmsprop(model$parameters, lr = 1e-3)
 # Validation-based early stopping
 best_val_loss <- Inf; patience <- 5; wait <- 0; best_state <- NULL
 
+# Note: The following lines may take considerable time.
 for (epoch in seq_len(50)) {
   model$train(); train_loss <- 0
   for (i in idx_train) {
