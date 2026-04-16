@@ -25,7 +25,7 @@ score <- ps1_score_data %>%
          score   = as.integer(U01a000S),
          correct = as.integer(score == 3)) %>%
   filter(!is.na(score)) %>%
-  select(SEQID, score, correct)
+  dplyr::select(SEQID, score, correct)
 
 # ── Step 2. Prepare Sequences ──────────────────────────────────────
 item_data <- ps1_data %>%
